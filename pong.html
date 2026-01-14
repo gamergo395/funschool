@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>2 Player Pong</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      margin: auto;
+      background: #222;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const paddleWidth = 10;
+    const paddleHeight = 100;
+    const ballSize = 10;
+
+    const player1 = {
+      x: 10,
+      y: canvas.height / 2 - paddleHeight / 2,
+      dy: 0
+    };
+
+    const player2 = {
+      x: canvas.width - paddleWidth - 10,
+      y: canvas.height / 2 - paddleHeight / 2,
+      dy: 0
+    };
+
+    const ball = {
+      x: canvas.width / 2,
+      y: canvas.height / 2,
+      dx: 4,
+      dy: 4
+    };
+
+    let keys = {};
+
+    function drawRect(x, y, w, h, color = 'white') {
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+    }
+
+    function drawBall(x, y, size, color = 'white') {
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, size, size);
+    }
+
+    function update() {
+      // Move paddles
+      if (keys['w'] && player1.y > 0) player1.y -= 6;
+      if (keys['s'] && player1.y < canvas.height - paddleHeight) player1.y += 6;
+      if (keys['ArrowUp'] && player2.y > 0) player2.y -= 6;
+      if (keys['ArrowDown'] && player2.y < canvas.height - paddleHeight) player2.y += 6;
+
+      // Move ball
+      ball.x += ball.dx;
+      ball.y += ball.dy;
+
+      // Wall collision
+      if (ball.y <= 0 || ball.y + ballSize >= canvas.height) {
+        ball.dy *= -1;
+      }
+
+      // Paddle collision
+      if (
+        ball.x <= player1.x + paddleWidth &&
+        ball.y + ballSize >= player1.y &&
+        ball.y <= player1.y + paddleHeight
+      ) {
+        ball.dx *= -1;
+        ball.x = player1.x + paddleWidth;
+      }
+
+      if (
+        ball.x + ballSize >= player2.x &&
+        ball.y + ballSize >= player2.y &&
+        ball.y <= player2.y + paddleHeight
+      ) {
+        ball.dx *= -1;
+        ball.x = player2.x - ballSize;
+      }
+
+      // Reset ball if out of bounds
+      if (ball.x < 0 || ball.x > canvas.width) {
+        ball.x = canvas.width / 2;
+        ball.y = canvas.height / 2;
+        ball.dx *= -1;
+        ball.dy *= Math.random() > 0.5 ? 4 : -4;
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawRect(player1.x, player1.y, paddleWidth, paddleHeight);
+      drawRect(player2.x, player2.y, paddleWidth, paddleHeight);
+      drawBall(ball.x, ball.y, ballSize);
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    // Input handling
+    document.addEventListener('keydown', (e) => {
+      keys[e.key] = true;
+    });
+
+    document.addEventListener('keyup', (e) => {
+      keys[e.key] = false;
+    });
+
+    loop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mini Subway Surfers</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+    }
+    #game {
+      position: relative;
+      width: 300px;
+      height: 500px;
+      margin: 50px auto;
+      background-color: #eee;
+      border: 3px solid #444;
+      overflow: hidden;
+    }
+    .player {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: blue;
+      bottom: 10px;
+      left: 125px;
+    }
+    .obstacle {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-color: red;
+      top: -60px;
+    }
+  </style>
+</head>
+<body>
+<div id="game">
+  <div id="player" class="player"></div>
+</div>
+
+<script>
+  const game = document.getElementById("game");
+  const player = document.getElementById("player");
+  const lanes = [25, 125, 225]; // 3 lanes
+  let currentLane = 1; // middle lane
+
+  // Player movement
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft" && currentLane > 0) {
+      currentLane--;
+      player.style.left = lanes[currentLane] + "px";
+    } else if (e.key === "ArrowRight" && currentLane < 2) {
+      currentLane++;
+      player.style.left = lanes[currentLane] + "px";
+    }
+  });
+
+  // Spawn obstacles
+  function spawnObstacle() {
+    const obstacle = document.createElement("div");
+    obstacle.classList.add("obstacle");
+    const lane = Math.floor(Math.random() * 3);
+    obstacle.style.left = lanes[lane] + "px";
+    game.appendChild(obstacle);
+
+    let top = -60;
+    const move = setInterval(() => {
+      top += 5;
+      obstacle.style.top = top + "px";
+
+      // Collision detection
+      const playerTop = 440;
+      const playerLeft = lanes[currentLane];
+
+      if (top >= playerTop &&
+          lane === currentLane &&
+          top < playerTop + 50) {
+        alert("Game Over!");
+        clearInterval(move);
+        location.reload();
+      }
+
+      if (top > 500) {
+        clearInterval(move);
+        game.removeChild(obstacle);
+      }
+    }, 30);
+  }
+
+  setInterval(spawnObstacle, 1000);
+</script>
+
+</body>
+</html>
