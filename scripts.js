@@ -1,13 +1,13 @@
 function checkAccess() {
     const code = document.getElementById('accessCode').value;
     if (code.toUpperCase() === 'F0REVERB0RED') {
-        window.location.href = 'subpages/games.html';
+        window.location.href = 'games.html';
     } else if (code.toUpperCase() === 'TRUR0') {
-        window.location.href = 'subpages/mainpagest.html';   
+        window.location.href = 'mainpagest.html';   
 	} else if (code.toUpperCase() === 'AIGAME') {
-		window.location.href = 'subpages/aigames.html';
+		window.location.href = 'aigames.html';
 	} else if (code.toUpperCase() === 'CHEESE') {
-		window.location.href = 'subpages/cheese.html';
+		window.location.href = 'cheese.html';
 	} else if (code.toUpperCase() === 'HELLO') {
     // Find the div where you want to show the message
     const messageDiv = document.getElementById('messageDiv');
@@ -22,4 +22,5 @@ function checkAccess() {
         alert('access denied: invalid code');
     }
     return false; // Prevent form submission
+
     }
